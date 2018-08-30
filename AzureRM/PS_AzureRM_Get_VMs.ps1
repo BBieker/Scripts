@@ -3,11 +3,12 @@
 #pwsh on MAC OS or powershell_ise.exe on Windows
 #Connect-AzureRmAccount (Login-AzureRMAcount and Add-AzureRMAccount are the older Azure cmdlets)
 # Goto URL https://microsoft.com/devicelogin and the password it provides example Q9KZ3HGN2
+#  You may need to select-azurermsubscription -subscriptionid $SubscriptionID #Define $SubscriptionID = 'replace with your actual subscription  xxx-xxxx-xxx'
 
 #Example location using the . way of running a script or just cut and paste to PowerShell
 #Example location using the . way of running a script
 #MAC PWSH syntax
-#. ~/Documents/Scripts/AzureRM/PS_AzureRM_Get_VMs.ps1
+#. ~/Documents/Evolve/Scripts/AzureRM/PS_AzureRM_Get_VMs.ps1
 #Windows PowerShell.exe/PowerShell_ISE.exe syntax
 #. $env:userprofile\Scripts\AzureRM\PS_AzureRM_Get_VMs.ps1
 
@@ -88,8 +89,8 @@ ForEach ($nic in $NICs)
     $VM_NIC = $nic.Name -Join ';'
     $VM_Status = (($VMstatus | Where {$_.ResourceGroupName -eq $VM_Resourcegroup -and $_.Name -eq $VM_Name}).PowerState).Replace('VM ', '')
     $VM_IP =  ($nic.IpConfigurations | select-object -ExpandProperty PrivateIpAddress) -Join ';'
-    $VMPIPName = ($nic.IpConfigurations.PublicIpAddress.Id -Split '/')[-1]
-    $VM_PublicIP =  ($PublicIPs | Where-Object {$_.ResourcegroupName -eq $VM_Resourcegroup -and $_.Name -like "$VMPIPName"} | Select IpAddress).IpAddress
+    $VM_PIPName = ($nic.IpConfigurations.PublicIpAddress.Id -Split '/')[-1]
+    $VM_PublicIP =  ($PublicIPs | Where-Object {$_.ResourcegroupName -eq $VM_Resourcegroup -and $_.Name -like "$VM_PIPName"} | Select IpAddress).IpAddress
     $VM_IP_MAC =  (($nic | Select MacAddress).MacAddress) -Join ';'
     $VM_Alloc =  $nic.IpConfigurations | select-object -ExpandProperty PrivateIpAllocationMethod
 
@@ -98,19 +99,19 @@ ForEach ($nic in $NICs)
 
     #Now populate the $VMInfo array
     $row = $VMInfo.NewRow()
-			$row.'ResourceGroup'=$VM_Resourcegroup
-			$row.'VM'=$VM_Name
-			$row.'VM_ID'=$VM_ID
-      $row.'VM_NIC'=$VM_NIC
-			$row.'Location'=$VM_Location
-			$row.'IP'=$VM_IP
-      $row.'Public_IP_Name'=$VMPIPName
-			$row.'Public_IP'=$VM_PublicIP
-			$row.'IP_MAC'=$VM_IP_MAC
-			$row.'Priv_Dyn'=$VM_Alloc
-      $row.'Status'=$VM_Status
-      $row.'Date_Time'=$Date_Time
-			$VMInfo.Rows.Add($row)
+	$row.'ResourceGroup'=$VM_Resourcegroup
+    $row.'VM'=$VM_Name
+    $row.'VM_ID'=$VM_ID
+    $row.'VM_NIC'=$VM_NIC
+	$row.'Location'=$VM_Location
+	$row.'IP'=$VM_IP
+    $row.'Public_IP_Name'=$VM_PIPName
+	$row.'Public_IP'=$VM_PublicIP
+    $row.'IP_MAC'=$VM_IP_MAC
+    $row.'Priv_Dyn'=$VM_Alloc
+    $row.'Status'=$VM_Status
+    $row.'Date_Time'=$Date_Time
+    $VMInfo.Rows.Add($row)
 }
 cls
 $TotalTime=(NEW-TIMESPAN –Start $DateStart –End $(GET-DATE))
