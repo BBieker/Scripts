@@ -1,7 +1,7 @@
 
 Param(
     [Parameter()][string]$rgName = 'dtdaily',
-    [Parameter()][string]$SubscriptionID = 'edbc6ce9-c5ef-4c5e-bebc-cc2b06c2fa49' #Changeme for Default SubscriptionID,
+    [Parameter()][string]$SubscriptionID = 'edbc6ce9-c5ef-4c5e-bebc-cc2b06c2fa49', #Changeme for Default SubscriptionID
     [Parameter()][string[]]$Startup_SKIP = @('skipMGTservers','skipZABBIXservers','skipBARRACUDAservers','skipSFTPservers')
 )
 
